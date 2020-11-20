@@ -149,7 +149,7 @@ class ReducerControl:
         print("REDUCER CONTROL: Combiner {} unavailable.".format(combiner.name),flush=True)
 
     def round(self, config):
-        """ Execute one global round. """
+        """ Execute one global round of training and validation."""
 
         # TODO: Set / update reducer states and such
         # TODO: Do a General Health check on Combiners in the beginning of the round.
@@ -307,6 +307,10 @@ class ReducerControl:
             
             # stop round monitor
             self.tracer.stop_monitor()
+
+            # Drop all clients
+            for combiner in self.network.get_combiners():
+                combiner.drop_clients()
 
         self.__state = ReducerState.idle
 

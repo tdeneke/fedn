@@ -203,6 +203,20 @@ class CombinerInterface:
 
         return False
 
+    def drop_clients(self):
+        channel = Channel(self.address, self.port, self.certificate).get_channel()
+        connector = rpc.ConnectorStub(channel)
+        request = fedn.ConnectionRequest()
+
+        try:
+            response = connector.AcceptingClients(request)
+        except grpc.RpcError as e:
+            if e.code() == grpc.StatusCode.UNAVAILABLE:
+                raise CombinerUnavailableError
+            else:
+                raise
+
+
 class ReducerInferenceInterface:
     def __init__(self):
         self.model_wrapper = None

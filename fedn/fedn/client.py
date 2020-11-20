@@ -1,11 +1,15 @@
 import json
 import os
+import sys
+import uuid
 import tempfile
+import time
 import threading
 
 import fedn.common.net.grpc.fedn_pb2 as fedn
 import fedn.common.net.grpc.fedn_pb2_grpc as rpc
 import grpc
+
 # TODO Remove from this level. Abstract to unified non implementation specific client.
 from fedn.utils.dispatcher import Dispatcher
 
@@ -106,7 +110,7 @@ class Client:
         self.state = ClientState.idle
 
     def get_model(self, id):
-        """Fetch model from the Combiner. """
+        """Fetch a model from the Combiner connected to."""
 
         from io import BytesIO
         data = BytesIO()
@@ -125,7 +129,7 @@ class Client:
         return data
 
     def set_model(self, model, id):
-        """Upload a model to the Combiner. """
+        """Upload a model to the Combiner via gRPC. """
 
         from io import BytesIO
 
@@ -171,6 +175,7 @@ class Client:
                         # TODO: Error handling
                         self.send_status("Received model update request.", log_level=fedn.Status.AUDIT,
                                          type=fedn.StatusType.MODEL_UPDATE_REQUEST, request=request)
+
                         model_id = self.__process_training_request(global_model_id)
 
                         if model_id != None:
@@ -184,6 +189,7 @@ class Client:
                             update.model_update_id = str(model_id)
                             update.timestamp = str(datetime.now())
                             update.correlation_id = request.correlation_id
+                            # TODO: Validate response
                             response = self.orchestrator.SendModelUpdate(update)
 
                             self.send_status("Model update completed.", log_level=fedn.Status.AUDIT,
@@ -198,7 +204,6 @@ class Client:
                 timeout = 5
                 print("CLIENT __listen_to_model_update_request_stream: GRPC ERROR {} retrying in {}..".format(
                     status_code.name, timeout), flush=True)
-                import time
                 time.sleep(timeout)
 
     def __listen_to_model_validation_request_stream(self):
@@ -228,6 +233,7 @@ class Client:
                         self.str = str(datetime.now())
                         validation.timestamp = self.str
                         validation.correlation_id = request.correlation_id
+                        # TODO: Validate response
                         response = self.orchestrator.SendModelValidation(validation)
                         self.send_status("Model validation completed.", log_level=fedn.Status.AUDIT,
                                          type=fedn.StatusType.MODEL_VALIDATION, request=validation)
@@ -239,7 +245,6 @@ class Client:
                 timeout = 5
                 print("CLIENT __listen_to_model_validation_request_stream: GRPC ERROR {} retrying in {}..".format(
                     status_code.name, timeout), flush=True)
-                import time
                 time.sleep(timeout)
 
     def __process_training_request(self, model_id):
@@ -250,23 +255,19 @@ class Client:
         try:
 
             mdl = self.get_model(str(model_id))
-            import sys
 
             inpath = self.helper.get_tmp_path()
             with open(inpath,'wb') as fh:
                 fh.write(mdl.getbuffer())
 
             outpath = self.helper.get_tmp_path()
-            print(inpath,outpath,flush=True)
 
             self.dispatcher.run_cmd("train {} {}".format(inpath, outpath))
 
-            import io
             out_model = None
-            with open(outpath, "rb") as fr:
-                out_model = io.BytesIO(fr.read())
+            with open(outpath, "rb") as fh:
+                out_model = io.BytesIO(fh.read())
 
-            import uuid
             updated_model_id = uuid.uuid4()
             self.set_model(out_model, str(updated_model_id))
 
@@ -275,11 +276,9 @@ class Client:
 
         except Exception as e:
             print("ERROR could not process training request due to error: {}".format(e),flush=True)
-            raise
             updated_model_id = None
 
         self.state = ClientState.idle
-
         return updated_model_id
 
     def __process_validation_request(self, model_id):
@@ -303,7 +302,6 @@ class Client:
 
         except Exception as e:
             print("Validation failed with exception {}".format(e), flush=True)
-            raise 
             self.state = ClientState.idle
             return None
 
@@ -329,6 +327,7 @@ class Client:
         self.logs.append(
             "{} {} LOG LEVEL {} MESSAGE {}".format(str(datetime.now()), status.sender.name, status.log_level,
                                                    status.status))
+        #TODO: Validate response
         response = self.connection.SendStatus(status)
 
     def _send_heartbeat(self, update_frequency=2.0):
@@ -340,7 +339,6 @@ class Client:
             except grpc.RpcError as e:
                 status_code = e.code()
                 print("CLIENT heartbeat: GRPC ERROR {} retrying..".format(status_code.name), flush=True)
-            import time
             time.sleep(update_frequency)
 
     def run_web(self):
@@ -356,7 +354,6 @@ class Client:
 
             return page.format(client=self.name, state=ClientStateToString(self.state), style=style, logs=logs_fancy)
 
-        import os, sys
         self._original_stdout = sys.stdout
         sys.stdout = open(os.devnull, 'w')
         app.run(host="0.0.0.0", port="8080")

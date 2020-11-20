@@ -1,4 +1,4 @@
-FROM morganekmefjord/basesci:latest
+gFROM morganekmefjord/basesci:latest
 RUN mkdir -p /app/client
 RUN mkdir /app/certs
 #COPY fedn /app/fedn
