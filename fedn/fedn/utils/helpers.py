@@ -48,5 +48,11 @@ def get_helper(helper_type):
     elif helper_type == 'keras_sequential':
         from fedn.utils.kerassequential import KerasSequentialHelper
         return KerasSequentialHelper()
+    elif helper_type == 'keras_weights':
+        from fedn.utils.kerasweights import KerasWeightsHelper
+        return KerasWeightsHelper()
+    elif helper_type == 'kerasweights_modeltar':
+        from fedn.utils.kerasweights_modeltar import KerasWeightsHelper
+        return KerasWeightsHelper()
     else:
         return None
