@@ -24,8 +24,8 @@ setup(
         "six",
         "python-slugify==4.0.1",
         "prettytable==1.0.1",
-        "grpcio-tools>=1.32.0",
-        "grpcio>=1.32.0",
+        "grpcio-tools>=1.34.0",
+        "grpcio>=1.34.0",
         "protobuf",
         "pypandoc==1.5",
         "wheel",
@@ -39,6 +39,7 @@ setup(
         "psutil",
         "click",
         "jinja2==2.11.1",
+        "nltk",
         "geoip2",
         "deprecated"
 
