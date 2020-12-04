@@ -8,7 +8,8 @@ services:
       context: .
       dockerfile: components/client/Dockerfile
     working_dir: /app/
-    command: /bin/bash -c "fedn run client -in ./config/settings-client.yaml"
+    command: /bin/bash -c "pip install -e /app/fedn && fedn run client -in ./config/settings-client.yaml"
     volumes:
       - ./config:/app/config
       - ./test/${EXAMPLE}/data:/app/data
+      - ./fedn:/app/fedn

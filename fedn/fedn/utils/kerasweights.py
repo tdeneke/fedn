@@ -5,7 +5,7 @@ import tensorflow.keras.models as krm
 import collections
 import tempfile
 
-from helpers import HelperBase
+from .helpers import HelperBase
 
 class KerasWeightsHelper(HelperBase):
     """ FEDn helper class for keras.Sequential. """
@@ -38,27 +38,40 @@ class KerasWeightsHelper(HelperBase):
         fod, path = tempfile.mkstemp(suffix='.h5')
         return path
 
-    def save_model(self, model, path='package'):
+    def save_model(self, model, path='weights.h5'):
 
         # saving model weights
-        model.save_weights(os.path.join(path, 'weights.h5'))
+        model.save_weights(path)
 
-        import tarfile
-        tar = tarfile.open("model.tar.gz", "w:gz")
-        tar.add(path)
-        tar.close()
+        #import tarfile
+        #tar = tarfile.open("model.tar.gz", "w:gz")
+        #tar.add(path)
+        #tar.close()
 
         return path
 
-    def load_model(self,model, path="model.tar.gz"):
-        import tarfile
+    def load_model(self, path='weights.h5'):
+        from .
+        #import tarfile
 
-        tar = tarfile.open(path, "r:gz")
-        for tarinfo in tar:
-            tar.extract(tarinfo)
-        tar.close()
-        model.load_weights('package/weights.h5')
-        # return model
+        #tar = tarfile.open(path, "r:gz")
+        #for tarinfo in tar:
+        #    tar.extract(tarinfo)
+        #tar.close()
+        model =
+        model.load_weights(path)
+        return model
+
+    def serialize_model_to_BytesIO(self,model):
+        outfile_name = self.save_model(model)
+
+        from io import BytesIO
+        a = BytesIO()
+        a.seek(0, 0)
+        with open(outfile_name, 'rb') as f:
+            a.write(f.read())
+        os.unlink(outfile_name)
+        return a
 
     def load_model_from_BytesIO(self,model_bytesio):
         """ Load a model from a BytesIO object. """

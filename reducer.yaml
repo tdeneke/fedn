@@ -12,8 +12,11 @@ services:
       context: .
       dockerfile: components/client/Dockerfile
     working_dir: /app/client
-    command: sh -c "mkdir -p /app/client/certs && fedn run reducer -n reducer  --init=./config/settings-reducer.yaml"
+    command: sh -c "pip install -e /app/fedn && mkdir -p /app/client/certs && fedn run reducer -n reducer  --init=./config/settings-reducer.yaml"
     volumes:
       - ./config:/app/client/config
+      - ./test/${EXAMPLE}/reducer:/app/client
+      - ./test/${EXAMPLE}/package/:/app/client/package
+      - ./fedn:/app/fedn
     ports:
         - 8090:8090
