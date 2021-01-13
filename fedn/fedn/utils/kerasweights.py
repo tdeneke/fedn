@@ -11,7 +11,7 @@ class KerasWeightsHelper(HelperBase):
     """ FEDn helper class for keras.Sequential. """
 
     def average_weights(self, weights):
-        """ Average weights """
+        """ Average weights of Keras Sequential models. """
 
         avg_w = []
         for l in range(len(weights[0])):
@@ -21,48 +21,59 @@ class KerasWeightsHelper(HelperBase):
 
         return avg_w
 
-    def increment_average(self, model, model_next, n):
+    def increment_average(self, weights, weights_next, n):
         """ Update an incremental average. """
-        w_prev = self.get_weights(model)
-        w_next = self.get_weights(model_next)
+        w_prev = weights
+        w_next = weights_next
         w = np.add(w_prev, (np.array(w_next) - np.array(w_prev)) / n)
-        self.set_weights(model, w)
+        return w
 
-    def set_weights(self, model, weights):
-        model.set_weights(weights)
+    def set_weights(self, weights_, weights):
+        weights_ = weights
 
-    def get_weights(self, model):
-        return model.get_weights()
+    def get_weights(self, weights):
+        return weights
 
     def get_tmp_path(self):
-        fod, path = tempfile.mkstemp(suffix='.h5')
+        fod, path = tempfile.mkstemp(suffix='.npz')
         return path
 
-    def save_model(self, model, path='weights.h5'):
+    def get_model_struct(self):
+        fod, path = tempfile.mkstemp(prefix='kerasmodel')
 
-        # saving model weights
-        model.save_weights(path)
+    def save_model(self, weights, path=None):
 
-        #import tarfile
-        #tar = tarfile.open("model.tar.gz", "w:gz")
-        #tar.add(path)
-        #tar.close()
+        if not path:
+            path = self.get_tmp_path()
+
+        weights_dict = {}
+        i = 0
+        for w in weights:
+            weights_dict[str(i)] = w
+            i += 1
+        np.savez_compressed(path, **weights_dict)
 
         return path
 
-    def load_model(self, path='weights.h5'):
-        from .
-        #import tarfile
+    def load_model(self, path="weights.npz"):
 
-        #tar = tarfile.open(path, "r:gz")
-        #for tarinfo in tar:
-        #    tar.extract(tarinfo)
-        #tar.close()
-        model =
-        model.load_weights(path)
-        return model
+        a = np.load(path)
+        names = a.files
+        weights = []
+        for name in names:
+            weights += [a[name]]
+        return weights
 
-    def serialize_model_to_BytesIO(self,model):
+    def load_model_from_BytesIO(self, model_bytesio):
+        """ Load a model from a BytesIO object. """
+        path = self.get_tmp_path()
+        with open(path, 'wb') as fh:
+            fh.write(model_bytesio)
+            fh.flush()
+
+        return self.load_model(path)
+
+    def serialize_model_to_BytesIO(self, model):
         outfile_name = self.save_model(model)
 
         from io import BytesIO
@@ -72,14 +83,3 @@ class KerasWeightsHelper(HelperBase):
             a.write(f.read())
         os.unlink(outfile_name)
         return a
-
-    def load_model_from_BytesIO(self,model_bytesio):
-        """ Load a model from a BytesIO object. """
-        path = self.get_tmp_path()
-        with open(path, 'wb') as fh:
-            fh.write(model_bytesio)
-            fh.flush()
-
-        return self.load_model(path)
-
-
