@@ -1,0 +1,32 @@
+version: '3.3'
+services:
+  client1:
+    environment:
+      - GET_HOSTS_FROM=dns
+    image: "scaleoutsystems/mnist-client:latest"
+    build:
+      context: .
+    working_dir: /app
+    command: /bin/bash -c "fedn run client -in fedn-network.yaml"
+    volumes:
+      - ./data:/app/data
+      - ./dataset/localsize600/ds0:/app/local_dataset/training_set
+      - ./dataset/testset/localsize5000/ds0:/app/local_dataset/test_set
+  client2:
+    environment:
+      - GET_HOSTS_FROM=dns
+    image: "scaleoutsystems/mnist-client:latest"
+    build:
+      context: .
+    working_dir: /app
+    command: /bin/bash -c "fedn run client -in fedn-network.yaml"
+    volumes:
+      - ./data:/app/data
+      - ./dataset/localsize600/ds1:/app/local_dataset/training_set
+      - ./dataset/testset/localsize5000/ds1:/app/local_dataset/test_set
+
+networks:
+  default:
+    external:
+      name: fedn_default
+      
