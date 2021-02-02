@@ -3,3 +3,6 @@ services:
  client:
   extra_hosts:
     combiner1: 130.238.29.150
+    combiner-aws-stockholm: 13.54.49.215
+    combiner-aws-stockholm2: 13.48.4.202
+
