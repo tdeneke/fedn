@@ -2,7 +2,7 @@ version: '3.3'
 services:
  client:
   extra_hosts:
-    combiner-aws-stockholm: 13.48.127.181
+    combiner-aws-stockholm: 13.49.137.83
     combiner-aws-ireland: 3.249.151.28
     combiner-aws-us-east: 3.89.244.114
 
