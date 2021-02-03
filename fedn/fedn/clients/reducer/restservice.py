@@ -182,7 +182,7 @@ class ReducerRestService:
 
 
             if request.method == 'POST':
-                timeout = request.form.get('timeout', 180)
+                timeout = request.form.get('timeout', 600)
                 rounds = int(request.form.get('rounds', 1))
 
                 task = (request.form.get('task', ''))
