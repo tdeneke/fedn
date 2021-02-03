@@ -4,5 +4,6 @@ services:
   extra_hosts:
     combiner-aws-stockholm: 13.48.131.242
     combiner-aws-ireland: 3.249.15.209
-    combiner-aws-us-east: 3.89.244.114
+    combiner-aws-us-east: 54.242.196.73
+    combiner-aws-frankfurt: 18.159.50.207
 
