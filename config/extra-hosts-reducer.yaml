@@ -2,9 +2,7 @@ version: '3.3'
 services:
    reducer:
      extra_hosts:
-        ssc-combiner-1: 130.238.29.121
-        ssc-combiner-2: 130.238.29.37
         combiner-aws-ireland: 3.249.15.209
         combiner-aws-us-east: 54.242.196.73
-        combiner-aws-stockholm: 13.48.131.242
+        combiner-aws-stockholm: 13.53.197.49
         combiner-aws-frankfurt: 18.159.50.207

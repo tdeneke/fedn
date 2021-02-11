@@ -9,16 +9,11 @@ services:
       - PROJECT=project
     image: "scaleoutsystems/fedn-reducer:develop"
     build:
-      context: ${PWD}
-      dockerfile: ${PWD}/components/reducer/Dockerfile
+      context: /home/ubuntu
+      dockerfile: /home/ubuntu/components/reducer/Dockerfile
     working_dir: /app/client
     command: sh -c "mkdir -p /app/client/certs && fedn run reducer -n reducer  --init=./config/settings-reducer.yaml"
     volumes:
-      - ${PWD}/config:/app/client/config
+      - /home/ubuntu/config:/app/client/config
     ports:
         - 8090:8090
-
-networks:
-  default:
-    external:
-      name: fedn_default
