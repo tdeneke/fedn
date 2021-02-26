@@ -9,13 +9,13 @@ statestore:
   mongo_config:
     username: fedn_admin
     password: password
-    host: 13.51.45.107
+    host: 13.49.175.14
     port: 6534
 
 storage:
   storage_type: S3
   storage_config:
-    storage_hostname: 13.51.45.107
+    storage_hostname: 13.49.175.14
     storage_port: 9000
     storage_access_key: fedn_admin
     storage_secret_key: password
