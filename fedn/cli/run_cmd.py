@@ -67,7 +67,7 @@ def run_cmd(ctx):
 @click.option('-t', '--token', required=False)
 @click.option('-n', '--name', required=False, default=str(uuid.uuid4()))
 @click.option('-i', '--client_id', required=False)
-@click.option('-r', '--remote', required=False, default=True, help='Enable remote configured execution context')
+@click.option('--remote/--no-remote', required=False, default=True, help='Enable remote configured execution context')
 @click.option('-u', '--dry-run', required=False, default=False)
 @click.option('-s', '--secure', required=False, default=True)
 @click.option('-v', '--preshared-cert', required=False, default=False)
