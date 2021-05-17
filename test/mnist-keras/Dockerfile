@@ -4,5 +4,7 @@ COPY requirements.txt /app/
 WORKDIR /app
 RUN pip install -r requirements.txt
 COPY fedn-network.yaml /app/ 
-
-
+COPY data /app/data
+COPY run.sh /run.sh
+RUN chmod +x /run.sh
+CMD /run.sh

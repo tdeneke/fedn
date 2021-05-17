@@ -375,8 +375,38 @@ class ReducerRestService:
                                    table_plot=table_plot,
                                    timeline_plot=timeline_plot,
                                    clients_plot=clients_plot,
-                                   metrics=valid_metrics
-                                   )
+                                   metrics=valid_metrics)
+                  
+                  
+        @app.route('/api/combiners/info')
+        def api_combiners_info():
+            combiner_info = combiner_stats()
+            return json.dumps(combiner_info)
+        
+        @app.route('/api/combiners/roundplot')
+        def api_combiners_roundplot():
+            plot = Plot(self.control.statestore)
+            plot = plot.create_round_plot()
+            return plot
+
+        @app.route('/api/combiners/combinerplot')
+        def api_combiners_combinerplot():
+            plot = Plot(self.control.statestore)
+            plot = plot.create_combiner_plot()
+            return plot
+        
+        @app.route('/api/combiners/memcpuplot')
+        def api_combiners_memcpuplot():
+            plot = Plot(self.control.statestore)
+            plot = plot.create_cpu_plot()
+            return plot
+
+        @app.route('/api/state')
+        def api_state():
+            client = self.name
+            state = ReducerStateToString(self.control.state())
+            print(state)
+            return {"state": state}
 
         @app.route('/network')
         def network():

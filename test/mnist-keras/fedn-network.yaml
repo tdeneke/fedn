@@ -1,5 +1,5 @@
 network_id: fedn-test-network
 controller:
-    discover_host: reducer
-    discover_port: 8090
+    discover_host: reducer-proj6-gta-f434.studio.demo.stackn.dev
+    discover_port: 443
     token: token

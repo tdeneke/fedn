@@ -3,3 +3,4 @@ tensorflow
 pandas
 keras
 sklearn
+grpcio
