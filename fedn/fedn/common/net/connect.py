@@ -57,11 +57,15 @@ class ConnectorClient:
 
         try:
             cert = str(self.certificate) if self.verify_cert else False
+            print("CERT!!!! ",cert, flush=True)
+            print("CERT!!!! ",self.certificate, flush=True)
+            
             retval = None
             if self.preferred_combiner:
                 retval = r.get("{}?name={}&combiner={}".format(self.connect_string + '/assign', self.name, self.preferred_combiner), verify=cert,
                            headers={'Authorization': 'Token {}'.format(self.token)})
             else:
+                print("HERE!!!",flush=True)
                 retval = r.get("{}?name={}".format(self.connect_string + '/assign', self.name), verify=cert,
                                headers={'Authorization': 'Token {}'.format(self.token)})
         except Exception as e:
