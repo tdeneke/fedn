@@ -128,7 +128,7 @@ def reducer_cmd(ctx, discoverhost, discoverport, token, name, init):
 @click.option('-n', '--name', required=False, default=str(uuid.uuid4()))
 @click.option('-h', '--hostname', required=False,default="combiner")
 @click.option('-i', '--port', required=False,default=12080)
-@click.option('-s', '--secure', required=False, default=True)
+@click.option('--secure/--insecure', required=False, default=True)
 @click.option('-c', '--max_clients', required=False, default=30)
 @click.option('-in', '--init', required=False, default=None, help='Set to a filename to (re)init combiner from file state.')
 @click.pass_context
