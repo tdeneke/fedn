@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose --file config/combiner.yaml convert -c -o charts/combiner
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: combiner
+  name: combiner
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: combiner
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose --file config/combiner.yaml convert -c -o charts/combiner
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: combiner
+    spec:
+      containers:
+        - args:
+            - sh
+            - -c
+            - sleep 5 && fedn run combiner -in ./config/settings-combiner.yaml
+          env:
+            - name: GET_HOSTS_FROM
+              value: dns
+            - name: PYTHONUNBUFFERED
+              value: "0"
+          image: scaleoutsystems/fedn-combiner:master
+          name: combiner
+          ports:
+            - containerPort: 12080
+          resources: {}
+          volumeMounts:
+            - mountPath: /app/client/config
+              name: combiner-claim0
+            - mountPath: /tmp/models
+              name: combiner-claim1
+          workingDir: /app/client
+      restartPolicy: Always
+      volumes:
+        - name: combiner-claim0
+          persistentVolumeClaim:
+            claimName: combiner-claim0
+        - name: combiner-claim1
+          persistentVolumeClaim:
+            claimName: combiner-claim1
+status: {}

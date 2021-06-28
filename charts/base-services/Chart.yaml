@@ -1,0 +1,8 @@
+name: charts/base-services
+description: A generated Helm Chart for charts/base-services from Skippbox Kompose
+version: 0.0.1
+apiVersion: v1
+keywords:
+  - charts/base-services
+sources:
+home:

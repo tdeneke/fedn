@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose --file config/base-services.yaml convert -c -o charts/base-services
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: mongo
+  name: mongo
+spec:
+  ports:
+    - name: "6534"
+      port: 6534
+      targetPort: 6534
+  selector:
+    io.kompose.service: mongo
+status:
+  loadBalancer: {}

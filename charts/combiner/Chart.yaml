@@ -1,0 +1,8 @@
+name: charts/combiner
+description: A generated Helm Chart for charts/combiner from Skippbox Kompose
+version: 0.0.1
+apiVersion: v1
+keywords:
+  - charts/combiner
+sources:
+home:

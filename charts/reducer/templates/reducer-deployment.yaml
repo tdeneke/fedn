@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose --file config/reducer.yaml convert -c -o charts/reducer
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: reducer
+  name: reducer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: reducer
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose --file config/reducer.yaml convert -c -o charts/reducer
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: reducer
+    spec:
+      containers:
+        - args:
+            - sh
+            - -c
+            - fedn run reducer -n reducer  --init=./config/settings-reducer.yaml
+          env:
+            - name: GET_HOSTS_FROM
+              value: dns
+            - name: PROJECT
+              value: project
+            - name: USER
+              value: test
+          image: tdeneke/fedn-reducer:master
+          name: reducer
+          ports:
+            - containerPort: 8090
+          resources: {}
+          volumeMounts:
+            - mountPath: /app/client/config
+              name: reducer-claim0
+          workingDir: /app/client
+      restartPolicy: Always
+      volumes:
+        - name: reducer-claim0
+          persistentVolumeClaim:
+            claimName: reducer-claim0
+status: {}
