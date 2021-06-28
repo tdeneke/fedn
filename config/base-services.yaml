@@ -31,6 +31,9 @@ services:
     ports:
       - 6534:6534
     command: mongod --port 6534
+    volumes:
+      - /data/db
+      - /data/configdb
 
   mongo-express:
     image: mongo-express:latest
